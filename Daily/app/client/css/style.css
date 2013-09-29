@@ -1,0 +1,31 @@
+.modal-login {
+	width: 400px;
+	margin-left: -150px;
+}
+
+body {
+    padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+    padding-bottom: 30px;
+}
+
+.space {
+  	padding-top: 20px;
+}
+
+.anchor {
+	padding-top: 50px;
+	margin-top: -50px;
+}
+
+.idea-text.line-through {
+	text-decoration: line-through;
+	color: rgb(169, 169, 169);
+}
+
+.idea-checkbox {
+	text-align: right;
+}
+
+.table.borderless td {
+	border: none;
+}
