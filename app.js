@@ -15,7 +15,7 @@ var logger = function(req, res, next) {
 // Serve files to client
 app.configure(function () {
 	app.use(logger);
-	app.set('port', 5000);
+	app.set('port', process.env.PORT || 5000);  //process.env.PORT IS A MUST for heroku
 	app.set('dirname' , __dirname);
 	app.use(express.bodyParser());
 	app.use(express.cookieParser());
