@@ -33,9 +33,12 @@ module.exports = function(app) {
 	app.post('/attemptManualLogin', function(req, res) {
 		if (AccountManager.checklogin(req.param('user'), req.param('pass')) == true)
 		{
+			// Save username to session
+			req.session.user = req.param('user');
+
 			// Save login info to cookie
 			console.log(req.param('remember-me'));
-			if (req.param('remember-me') == true)
+			if (req.param('remember-me') == 'true')
 			{
 				console.log("remembered");
 				res.cookie('user', req.param('user'), {maxAge : 900000});
