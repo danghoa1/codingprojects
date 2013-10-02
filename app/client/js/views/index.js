@@ -251,7 +251,7 @@ var ENTER_KEY = 13;
       {
         $(this.el).html(
               
-          '<table class="table" id="idea-table">  \
+          '<table class="table borderless" id="idea-table">  \
             <tbody> \
             </tbody>  \
             </table>');
