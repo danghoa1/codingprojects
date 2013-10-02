@@ -19,11 +19,7 @@ app.configure(function () {
 	app.set('dirname' , __dirname);
 	app.use(express.bodyParser());
 	app.use(express.cookieParser());
-<<<<<<< HEAD
 	app.use(express.session({secret : 'I must code. Daily.'}));
-=======
-	app.use(express.session({secret: '343 no way you can figure out 343'}));
->>>>>>> bb6e30ad0deda7de8ca462b80e6ab00a8ca7a818
 	app.use(express.static(__dirname + '/app/client'));
 });
 

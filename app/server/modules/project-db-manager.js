@@ -151,6 +151,47 @@ exports.updateIdea = function(request, response) {
 
 }
 
+exports.addNewIdea = function(request, response) {
+
+	var idea = request.body;
+	delete idea._id;
+
+	console.log('Adding new idea:');
+    console.log(JSON.stringify(idea));
+    db.collection('ideas', function(err, collection) {
+        collection.insert(idea, {safe:true}, function(err, result) {
+            if (err) {
+                console.log('Error adding new idea: ' + err);
+                response.send({'error':'An error has occurred'});
+            } else {
+                console.log('Added ' + idea._id);
+                response.send(idea);
+            }
+        });
+    });
+}
+
+exports.deleteIdea = function(request, response) {
+
+	var id = request.params.id;
+    var idea = request.body;
+    delete idea._id;
+    console.log('Deleting idea: ' + id);
+    console.log(JSON.stringify(idea));
+    db.collection('ideas', function(err, collection) {
+        collection.remove({'_id':new BSON.ObjectID(id)}, {safe:true}, function(err, result) {
+            if (err) {
+                console.log('Error deleting idea: ' + err);
+                response.send({'error':'An error has occurred'});
+            } else {
+                console.log('' + result + ' document(s) updated');
+                response.send(idea);
+            }
+        });
+    });
+
+}
+
 // Populate DB ---------------------------------------------------------------------------------
 
 var populateProjects = function() {

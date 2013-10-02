@@ -38,3 +38,7 @@ body {
 td.checkbox-column {
 	width: 29px;
 }
+
+td.delete-idea-column {
+	width:29px;
+}

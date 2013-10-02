@@ -59,4 +59,8 @@ module.exports = function(app) {
 	app.get('/technologies', DBManager.loadTechnologies);
 
 	app.put('/ideas/:id',DBManager.updateIdea);
+
+	app.post('/ideas', DBManager.addNewIdea);
+
+	app.delete('/ideas/:id',DBManager.deleteIdea);
 };

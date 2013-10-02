@@ -1,3 +1,5 @@
+var ENTER_KEY = 13;
+
 (function($){
 
 
@@ -19,8 +21,7 @@
     idAttribute: "_id",
 
     defaults: {
-      _id: 0,
-      name: 'test',
+      name: 'New idea',
       completed: false
     },
 
@@ -150,7 +151,10 @@
       'click .idea-checkbox' : 'checkboxClicked',
       'dblclick .idea-text.incomplete': 'editIdea',
       'keypress .idea-text.edit': 'updateOnEnter',
-      'blur .idea-text.edit': 'stopEditing'
+      'blur .idea-text.edit': 'stopEditing',
+      'mouseover' : 'showDeleteButton',
+      'mouseout' : 'hideDeleteButton',
+      'click .close' : 'destroy'
     },
 
     initialize: function(){
@@ -162,12 +166,13 @@
       
       $(this.el).html(
         '<td class="checkbox-column"><input type="checkbox" class="idea-checkbox"' + (this.model.get('completed') ? ' checked' : '') + '></td>  \
-        <td class="idea-text-container"></td>');
+        <td class="idea-text-column"></td> \
+        <td class="delete-idea-column"><a class="close" style="visibility:hidden;">x</a></td>');
 
       if (this.editing) 
-        $('.idea-text-container' , this.el).html('<input class="idea-text edit" value ="' + this.model.get('name') + '">');    
+        $('.idea-text-column' , this.el).html('<input class="idea-text edit" value ="' + this.model.get('name') + '">');    
       else
-        $('.idea-text-container' , this.el).html('<p class="idea-text' + (this.model.get('completed') ? ' complete' : ' incomplete') + '">' + this.model.get('name') + '</p>');
+        $('.idea-text-column' , this.el).html('<p class="idea-text' + (this.model.get('completed') ? ' complete' : ' incomplete') + '">' + this.model.get('name') + '</p>');
 
       return this; // for chainable calls, like .render().el
     },
@@ -197,8 +202,22 @@
       this.model.save();
       this.editing = false;
       this.render();
-    }
+    },
 
+    showDeleteButton: function(){
+      $('.delete-idea-column a', this.el).css('visibility', 'visible');
+    },
+
+    hideDeleteButton: function() {
+      $('.delete-idea-column a', this.el).css('visibility', 'hidden');
+    },
+
+    destroy: function() {
+      var self = this;
+      this.model.destroy( {success: function () {
+        $(self.el).remove();
+      }});
+    }
 
   });
 
@@ -206,13 +225,14 @@
     el: $('#idealist'),  // attaches `this.el` to an existing element.
 
     events: {
+      'click #new-idea-btn' : 'addNewIdea'
     },
 
     initialize: function() {
       
       var self = this; 
 
-      _.bindAll(this, 'render'); // remember: every function that uses 'this' as the current object should be in here
+      _.bindAll(this, 'render', 'addNewIdea','addOne'); // remember: every function that uses 'this' as the current object should be in here
 
       this.collection = new IdeaList();
 
@@ -223,27 +243,48 @@
 
     render: function(){
 
+      var self = this;
+
       if (this.collection.length == 0)
         $(this.el).html("<p>No new idea has been added.  Please check back later!</p>");
       else
       {
         $(this.el).html(
               
-          '<table class="table borderless" id="idea-table">  \
+          '<table class="table" id="idea-table">  \
             <tbody> \
             </tbody>  \
             </table>');
 
         this.collection.each(function(item){ // in case collection is not empty
           
-          var ideaView = new IdeaView({
-            model: item
-          });
-          $('table tbody', this.el).append(ideaView.render().el);
+          self.addOne(item);
 
         }, this);
-
       }
+
+      // Add a 'Add new idea' button
+      $(this.el).append(
+        '<button id="new-idea-btn">Add new idea</button>');
+    },
+
+    addOne: function(idea) {
+      var ideaView = new IdeaView({
+            model: idea
+          });
+      $('table tbody', this.el).append(ideaView.render().el);
+      return ideaView;
+    },
+
+    addNewIdea : function()
+    {
+      var self = this;
+      var newIdea = new Idea;
+
+      this.collection.create(newIdea, {success: function(){
+        var ideaView = self.addOne(newIdea);
+        ideaView.editIdea();
+      }});
     }
   });
 
