@@ -17,15 +17,24 @@ body {
 	margin-top: -50px;
 }
 
-.idea-text.line-through {
+.idea-text {
+	width:100%;
+	border:none;
+	box-shadow: none;
+	margin-bottom: 0px;
+}
+
+.idea-text.complete {
 	text-decoration: line-through;
 	color: rgb(169, 169, 169);
 }
 
-.idea-checkbox {
-	text-align: right;
-}
+
 
 .table.borderless td {
 	border: none;
+}
+
+td.checkbox-column {
+	width: 29px;
 }

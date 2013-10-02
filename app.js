@@ -19,6 +19,7 @@ app.configure(function () {
 	app.set('dirname' , __dirname);
 	app.use(express.bodyParser());
 	app.use(express.cookieParser());
+	app.use(express.session({secret : 'I must code. Daily.'}));
 	app.use(express.static(__dirname + '/app/client'));
 });
 

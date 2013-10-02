@@ -53,6 +53,10 @@ exports.loadProjects = function(request,response) {
 
 	    collection.find().sort({day:1}).toArray(function(err, results) {
 
+	    	for (var i =0; i < results.length; i++)
+				results[i].technologies = results[i].technologies.sort();
+
+
 	        response.send(JSON.stringify(results));
 	    });
 	  });
@@ -114,7 +118,9 @@ exports.loadTechnologies = function(request, response) {
 	    		},
 	    		function (err) {
 
-	    			// Done.  Send JSON to client
+	    			// Done.  Sort by technology name and send JSON to client
+	    			data.sort(function(a,b) { return a.name> b.name; });
+
 	    			response.send(JSON.stringify(data));
 	    		});
 

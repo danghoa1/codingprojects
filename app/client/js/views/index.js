@@ -1,5 +1,7 @@
 (function($){
 
+
+
   // Model ------------------------------------------------------------------------
 
   var Project = Backbone.Model.extend({
@@ -146,21 +148,26 @@
 
     events: {
       'click .idea-checkbox' : 'checkboxClicked',
-      'dblclick .idea-text': 'editIdea',
-      'keypress .edit': 'updateOnEnter',
-      'blur .edit': 'stopEditing'
+      'dblclick .idea-text.incomplete': 'editIdea',
+      'keypress .idea-text.edit': 'updateOnEnter',
+      'blur .idea-text.edit': 'stopEditing'
     },
 
     initialize: function(){
-      _.bindAll(this, 'render'); // every function that uses 'this' as the current object should be in here
-      
+      _.bindAll(this, 'render', 'editIdea', 'stopEditing', 'updateOnEnter'); // every function that uses 'this' as the current object should be in here
+      this.editing = false;
     },
 
     render: function(){
       
       $(this.el).html(
-        '<td><input class="idea-checkbox" type="checkbox"' + (this.model.get('completed') ? ' checked' : '') + '></td>  \
-        <td class="editing idea-text' + (this.model.get('completed') ? ' line-through' : '') + '">' + this.model.get('name') + '</td>');
+        '<td class="checkbox-column"><input type="checkbox" class="idea-checkbox"' + (this.model.get('completed') ? ' checked' : '') + '></td>  \
+        <td class="idea-text-container"></td>');
+
+      if (this.editing) 
+        $('.idea-text-container' , this.el).html('<input class="idea-text edit" value ="' + this.model.get('name') + '">');    
+      else
+        $('.idea-text-container' , this.el).html('<p class="idea-text' + (this.model.get('completed') ? ' complete' : ' incomplete') + '">' + this.model.get('name') + '</p>');
 
       return this; // for chainable calls, like .render().el
     },
@@ -169,17 +176,29 @@
 
       var self = this;
       this.model.set({'completed':$('.idea-checkbox', this.el).is(':checked')});
-      this.model.save(null, {
-        success: function(model) {
-          self.render();
-        }
-      });
+      this.model.save();
+      this.render();
     },
 
     editIdea: function(){
+      this.editing = true;
+      this.render();
+      $('.idea-text.edit', this.el).focus();
+    },
 
+    updateOnEnter: function(e){
+      if (e.which == 13) {
+        this.stopEditing();
+      }
+    },
 
+    stopEditing: function(){
+      this.model.set({'name' : $('.idea-text.edit', this.el).val()});
+      this.model.save();
+      this.editing = false;
+      this.render();
     }
+
 
   });
 
@@ -210,7 +229,7 @@
       {
         $(this.el).html(
               
-          '<table class="table borderless">  \
+          '<table class="table borderless" id="idea-table">  \
             <tbody> \
             </tbody>  \
             </table>');
