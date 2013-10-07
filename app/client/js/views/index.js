@@ -225,16 +225,23 @@ var ENTER_KEY = 13;
     el: $('#idealist'),  // attaches `this.el` to an existing element.
 
     events: {
-      'click #new-idea-btn' : 'addNewIdea'
+      'click #new-idea-btn' : 'addNewIdea',
+      'click #toggle-completed-btn' : 'toogleCompleted'
     },
 
     initialize: function() {
       
       var self = this; 
 
-      _.bindAll(this, 'render', 'addNewIdea','addOne'); // remember: every function that uses 'this' as the current object should be in here
+      this.showCompleted = false;
+
+      _.bindAll(this, 'render', 'addNewIdea','addOne','prependOne', 'updateToggleText'); // remember: every function that uses 'this' as the current object should be in here
 
       this.collection = new IdeaList();
+
+      this.collection.on("change", function() {
+        self.render();
+      });
 
       this.collection.fetch({success: function() {self.render();}});
 
@@ -251,21 +258,21 @@ var ENTER_KEY = 13;
       {
         $(this.el).html(
               
-          '<table class="table borderless" id="idea-table">  \
+          ' <p><a id="new-idea-btn">Add new idea</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a id="toggle-completed-btn"></a></p> \
+            <table class="table borderless" id="idea-table">  \
             <tbody> \
             </tbody>  \
             </table>');
 
         this.collection.each(function(item){ // in case collection is not empty
           
-          self.addOne(item);
+          if (item.get('completed') == false || self.showCompleted)
+            self.addOne(item);
 
         }, this);
-      }
 
-      // Add a 'Add new idea' button
-      $(this.el).append(
-        '<button id="new-idea-btn">Add new idea</button>');
+        this.updateToggleText();
+      }
     },
 
     addOne: function(idea) {
@@ -276,17 +283,51 @@ var ENTER_KEY = 13;
       return ideaView;
     },
 
+    prependOne:function(idea) {
+      var ideaView = new IdeaView({
+            model: idea
+          });
+      $('table tbody', this.el).prepend(ideaView.render().el);
+      return ideaView;
+    },
+
     addNewIdea : function()
     {
       var self = this;
       var newIdea = new Idea;
 
       this.collection.create(newIdea, {success: function(){
-        var ideaView = self.addOne(newIdea);
+        var ideaView = self.prependOne(newIdea);
         ideaView.editIdea();
       }});
-    }
+    },
+
+    // Toggle stuff -------------------------------------------------------
+
+
+
+    updateToggleText :function()
+    {
+      var count = 0;
+
+      this.collection.each(function(item) { 
+          if (item.get('completed')) count++;
+      }, this);
+
+      var text = (this.showCompleted ? 'Hide completed' : 'Show completed') + ' (' + count + ')' ;
+      $('#toggle-completed-btn', this.el).html( text);
+    },
+
+    toogleCompleted : function()
+    {
+      this.showCompleted = !this.showCompleted;
+      this.updateToggleText();
+      this.render();
+    },
+
   });
+
+
 
   var TechnologyView = Backbone.View.extend({
     tagName: 'tr', // name of (orphan) root tag in this.el

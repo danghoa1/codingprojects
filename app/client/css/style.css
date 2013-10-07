@@ -42,3 +42,7 @@ td.checkbox-column {
 td.delete-idea-column {
 	width:29px;
 }
+
+a {
+	cursor:pointer;
+}

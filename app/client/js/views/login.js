@@ -51,7 +51,7 @@ function attemptAutoLogin()
 
 function showNotLoginStatus()
 {
-	$('#login-area').html("<li><a  id=\"txt-login\" href=\"#\">Sign in</a></li>");
+	$('#login-area').html("<li><a  id=\"txt-login\">Sign in</a></li>");
 	$('#txt-login').click(function(){
 		$('#login-modal').modal();
 	});
