@@ -24,7 +24,7 @@
 				            <li><a href="#technologies">Technologies</a></li> 
 				             <li><a href="#about">About</a></li> 
 			            </ul>
-			            <ul class="nav pull-right" id="login-area">
+			            <ul id="login-area" class="nav pull-right">
 			            </ul>
 			        </div>  
 		        </div>  
@@ -32,31 +32,30 @@
 
 		    
 		    <!-- Login Modal -->
-		    <form method="post" id="login-form">
-			    <div id="login-modal" class="modal modal-login hide fade in" style="display: none; ">  
-			    	
-				    
-				    	<div class="modal-header">
-				    		<a class="close" data-dismiss="modal">x</a>
-				    		<h5>Sign in</h5>	
-				    	</div>
-						<div class="modal-body">  
-						    <div id='login-error'></div>      
-					      	<label>Username</label>
-					      	<input type="text" name="user" id="user-tf" class="input-block-level required">
-					      	<label>Password</label>
-					      	<input type="password" name="pass" id="pass-tf" class="input-block-level required">
-					      	<label  class="checkbox">Remember Me
-					        	<input type="checkbox" id="remember-me" checked="checked">
-							</label>
-						</div>
-						<div class="modal-footer">
-								<button type="submit" id="submit" class="btn btn-primary">Sign in</button> 
-						        <button class="btn" data-dismiss="modal">Close</button> 
-						</div>   
-					
-				</div>  
-			</form>
+		    <div id="login-modal" class="modal modal-login hide fade in" style="display: none; ">  
+		    	<form method="post" id="login-form">
+			    
+			    	<div class="modal-header">
+			    		<a class="close" data-dismiss="modal">x</a>
+			    		<h5>Sign in</h5>	
+			    	</div>
+					<div class="modal-body">  
+					    <div id='login-error'></div>      
+				      	<label>Username</label>
+				      	<input type="text" name="user" id="user-tf" class="input-block-level required">
+				      	<label>Password</label>
+				      	<input type="password" name="pass" id="pass-tf" class="input-block-level required">
+				      	<label  class="checkbox">Remember Me
+				        	<input type="checkbox" id="remember-me" checked="checked">
+						</label>
+					</div>
+					<div class="modal-footer">
+							<button type="submit" id="submit" class="btn btn-primary">Sign in</button> 
+					        <button class="btn" data-dismiss="modal">Close</button> 
+					</div>   
+				</form>
+			</div>  
+	
 
 
 		    <div class="anchor" id="projects" ><h2>Projects</h2><div>
@@ -97,9 +96,9 @@
 	    <script src="vendor/backbone-min.js"></script>
 	    <script src="vendor/jquery.form.js"></script>
 	    <script src="vendor/bootstrap.js"></script>
-	    <script src="js/models/authentication.js"></script>
 	    <script src="js/views/index.js"></script>
-
+	    <script src="js/views/login-basic-js.js"></script>
+	    <script src="js/form-validators/loginValidator.js"></script>
 	    <script>
 	    	
 	    </script>

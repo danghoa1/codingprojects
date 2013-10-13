@@ -1,3 +1,4 @@
+var app = app || {};
 var ENTER_KEY = 13;
 
 (function($){
@@ -239,10 +240,6 @@ var ENTER_KEY = 13;
 
       this.collection = new IdeaList();
 
-      this.collection.on("change", function() {
-        self.render();
-      });
-
       this.collection.fetch({success: function() {self.render();}});
 
       this.render();
@@ -421,8 +418,104 @@ var ENTER_KEY = 13;
   });
 
 
+  var LoginView = Backbone.View.extend({
+
+    el: $('#login-area'),  // attaches `this.el` to an existing element.
+
+    events: {
+      'click #txt-login' : 'showModal',
+      'click #txt-logout': 'logout'
+    },
+
+    initialize: function() {
+      
+      _.bindAll(this, 'render', 'attemptAutoLogin', 'login','logout', 'showError');
+      
+      var self = this;
+
+      // Initialie login modal form
+
+      $('#login-form').ajaxForm({
+        url: '/attemptManualLogin',
+
+        beforeSubmit : function(formData, jqForm, options){
+          var username = $('#user-tf').val();
+          var password = $('#pass-tf').val();
+          var err;
+          if (app.authentication.validate(username, password, err) == false){
+            self.showError(err);
+            return false;
+          }   
+          else {
+            
+            // append 'remember-me' option to formData to write local cookie //
+            formData.push({name:'remember-me', value: $('#remember-me').is(':checked')});
+            return true;
+          }
+        },
+
+        success : function(responseText, status, xhr, $form){
+          $('#login-modal').modal('hide');
+          self.login();
+        },
+
+        error : function(e){
+          self.showError('Please check your username and/or password');
+        }
+      }); 
+
+      this.attemptAutoLogin();
+      this.render();
+    
+    },
+
+    render: function(){
+      if (app.authentication.get('authorized') == false)
+      {
+        $(this.el).html("<li><a id=\"txt-login\">Sign in</a></li>");
+      }
+      else
+      {
+        $(this.el).html("\
+          <li><a>Welcome!</a></li>  \
+          <li><a id=\"txt-logout\" href=\"#\">Sign out</a></li>");
+      }
+    },
+
+    showModal : function() {
+      
+      $('#login-modal').modal();
+      $('#login-error').empty();
+    },
+
+    attemptAutoLogin : function() {
+      var self = this;
+      $.get("/attemptAutoLogin", function(success){
+        if (success) self.login();
+      });
+    },
+
+    login : function() {
+      app.authentication.authenticated();
+      this.render();
+    },
+
+    logout : function() {
+      app.authentication.signedOut();
+      this.render();
+    },
+
+    showError : function(err) {
+      $('#login-error').html(
+        "<div class=\"alert alert-error\">  \
+          <a class=\"close\" data-dismiss=\"alert\">×</a>" + err + "</div>");
+    },
+
+  });
+
   var projectListView = new ProjectListView();
   var ideaListView = new IdeaListView();
   var technologyListView = new TechnologyListView();
+  var loginView = new LoginView();
 
 })(jQuery);
