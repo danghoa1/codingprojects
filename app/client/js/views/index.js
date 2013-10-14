@@ -418,32 +418,74 @@ var ENTER_KEY = 13;
   });
 
 
-  var LoginView = Backbone.View.extend({
+  var NavBarView = Backbone.View.extend({
 
-    el: $('#login-area'),  // attaches `this.el` to an existing element.
+    el: $('#navbar'),  // attaches `this.el` to an existing element.
 
     events: {
       'click #txt-login' : 'showModal',
-      'click #txt-logout': 'logout'
+      'click #txt-logout': 'logout',
     },
 
     initialize: function() {
       
-      _.bindAll(this, 'render', 'attemptAutoLogin', 'login','logout', 'showError');
+      _.bindAll(this, 'render' ,'logout');
       
       var self = this;
 
-      // Initialie login modal form
+      app.authentication.on("change" , self.render);
 
-      $('#login-form').ajaxForm({
+      this.render();
+    },
+
+    render: function(){
+      if (app.authentication.isAuthorized() == false)
+      {
+        $('#login-area',this.el).html("<li><a id=\"txt-login\">Sign in</a></li>");
+      }
+      else
+      {
+        $('#login-area',this.el).html("\
+          <li><a>Welcome!</a></li>  \
+          <li><a id=\"txt-logout\" href=\"#\">Sign out</a></li>");
+      }
+    },
+
+    showModal : function() {
+      
+      $('#login-modal').modal();
+      $('#login-error').empty();
+    },
+
+    logout : function() {
+      app.authentication.signedOut();
+      this.render();
+    },
+
+  });
+
+  var LoginModalView = Backbone.View.extend({
+
+    el: $('#login-form'),
+
+    events : {
+      'click #txt-forgot': 'forgotPassword',
+    },
+
+    initialize : function() {
+
+       _.bindAll(this, 'render', 'showError');
+
+       var self = this;
+
+       // Initialie login modal form
+
+      $(this.el).ajaxForm({
         url: '/attemptManualLogin',
 
         beforeSubmit : function(formData, jqForm, options){
-          var username = $('#user-tf').val();
-          var password = $('#pass-tf').val();
-          var err;
-          if (app.authentication.validate(username, password, err) == false){
-            self.showError(err);
+          if (app.authentication.validate($('#user-tf').val(), $('#pass-tf').val()) == false){
+            self.showError("Invalid username and/or password");
             return false;
           }   
           else {
@@ -456,7 +498,7 @@ var ENTER_KEY = 13;
 
         success : function(responseText, status, xhr, $form){
           $('#login-modal').modal('hide');
-          self.login();
+          app.authentication.authenticated();
         },
 
         error : function(e){
@@ -464,49 +506,66 @@ var ENTER_KEY = 13;
         }
       }); 
 
-      this.attemptAutoLogin();
-      this.render();
-    
-    },
-
-    render: function(){
-      if (app.authentication.get('authorized') == false)
-      {
-        $(this.el).html("<li><a id=\"txt-login\">Sign in</a></li>");
-      }
-      else
-      {
-        $(this.el).html("\
-          <li><a>Welcome!</a></li>  \
-          <li><a id=\"txt-logout\" href=\"#\">Sign out</a></li>");
-      }
-    },
-
-    showModal : function() {
-      
-      $('#login-modal').modal();
-      $('#login-error').empty();
-    },
-
-    attemptAutoLogin : function() {
-      var self = this;
-      $.get("/attemptAutoLogin", function(success){
-        if (success) self.login();
-      });
-    },
-
-    login : function() {
-      app.authentication.authenticated();
-      this.render();
-    },
-
-    logout : function() {
-      app.authentication.signedOut();
-      this.render();
     },
 
     showError : function(err) {
       $('#login-error').html(
+        "<div class=\"alert alert-error\">  \
+          <a class=\"close\" data-dismiss=\"alert\">×</a>" + err + "</div>");
+    },
+
+    forgotPassword : function() {
+      $('#login-modal').modal('hide');
+      $('#forgot-password-modal').modal();
+      $('#forgot-password-error').empty();
+    }
+
+  });
+
+  var ForgotModalView = Backbone.View.extend({
+
+    el: $('#forgot-password-form'),
+
+    initialize : function() {
+
+       _.bindAll(this, 'render', 'showError');
+
+       var self = this;
+
+       // Initialie login modal form
+
+      $(this.el).ajaxForm({
+        url: '/forgotPassword',
+
+        beforeSubmit : function(formData, jqForm, options){
+    
+          if (app.authentication.validateEmail($('#email-tf').val()) == false){
+            self.showError("Invalid email address");
+            return false;
+          }   
+          else {
+            $('#forgot-password-error').html(
+        "<div class=\"alert alert-info\">  \
+         Please wait ...</div>");
+            return true;
+          }
+        },
+
+        success : function(responseText, status, xhr, $form){
+          $('#forgot-password-error').html(
+        "<div class=\"alert alert-success\">  \
+          <strong>Success!&nbsp;</strong> Your password has been sent.</div>");
+        },
+
+        error : function(e){
+          self.showError('No account with this email address can be found.');
+        }
+      }); 
+
+    },
+
+    showError : function(err) {
+      $('#forgot-password-error').html(
         "<div class=\"alert alert-error\">  \
           <a class=\"close\" data-dismiss=\"alert\">×</a>" + err + "</div>");
     },
@@ -516,6 +575,15 @@ var ENTER_KEY = 13;
   var projectListView = new ProjectListView();
   var ideaListView = new IdeaListView();
   var technologyListView = new TechnologyListView();
-  var loginView = new LoginView();
+
+  var navBarView = new NavBarView();
+  var loginModalView = new LoginModalView();
+  var forgotModalView = new ForgotModalView();
+
+  
 
 })(jQuery);
+
+$(document).ready(function() {
+  app.authentication.attemptAutoLogin();
+});

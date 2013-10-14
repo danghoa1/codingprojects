@@ -5,9 +5,7 @@ var DBManager = require('./modules/project-db-manager.js');
 
 module.exports = function(app) {
 
-	app.get('/', function(req, res) {
-		res.sendfile(app.get('dirname') + '/app/client/html/index.html');
-	});
+	// Load pages ------------------------------------------------------------------------
 
 	app.get('/hello-backbone', function(req, res) {
 		res.sendfile(app.get('dirname') + '/app/client/html/hello-backbone.html');
@@ -16,6 +14,24 @@ module.exports = function(app) {
 	app.get('/index-basic-js', function(req, res) {
 		res.sendfile(app.get('dirname') + '/app/client/html/index-basic-js.html');
 	});	
+
+	// Home page ------------------------------------------------------------------------
+
+	app.get('/', function(req, res) {
+		res.sendfile(app.get('dirname') + '/app/client/html/index.html');
+	});
+
+	app.get('/projects', DBManager.loadProjects);
+
+	app.get('/ideas', DBManager.loadIdeas);
+
+	app.get('/technologies', DBManager.loadTechnologies);
+
+	app.put('/ideas/:id',DBManager.updateIdea);
+
+	app.post('/ideas', DBManager.addNewIdea);
+
+	app.delete('/ideas/:id',DBManager.deleteIdea);
 
 	// Login ------------------------------------------------------------------------------
 
@@ -50,17 +66,17 @@ module.exports = function(app) {
 		{
 			res.send(400);
 		}
-	})
+	});
 
-	app.get('/projects', DBManager.loadProjects);
+	app.post('/forgotPassword', function(req,res) {
 
-	app.get('/ideas', DBManager.loadIdeas);
+		AccountManager.forgotPassword(req.param('email'), function(err, message) { 
+			console.log(err || message); 
+			if (err == null || err == "")
+				res.send(200);
+			else
+				res.send(400);
+		});
 
-	app.get('/technologies', DBManager.loadTechnologies);
-
-	app.put('/ideas/:id',DBManager.updateIdea);
-
-	app.post('/ideas', DBManager.addNewIdea);
-
-	app.delete('/ideas/:id',DBManager.deleteIdea);
+	});
 };
