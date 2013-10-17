@@ -150,8 +150,8 @@ var ENTER_KEY = 13;
 
     events: {
       'click .idea-checkbox' : 'checkboxClicked',
-      'dblclick .idea-text.incomplete': 'editIdea',
-      'keypress .idea-text.edit': 'updateOnEnter',
+      'click .idea-text.incomplete': 'editIdea',
+      'keyup .idea-text.edit': 'updateOnKey',
       'blur .idea-text.edit': 'stopEditing',
       'mouseover' : 'showDeleteButton',
       'mouseout' : 'hideDeleteButton',
@@ -159,7 +159,7 @@ var ENTER_KEY = 13;
     },
 
     initialize: function(){
-      _.bindAll(this, 'render', 'editIdea', 'stopEditing', 'updateOnEnter'); // every function that uses 'this' as the current object should be in here
+      _.bindAll(this, 'render', 'editIdea', 'stopEditing', 'updateOnKey'); // every function that uses 'this' as the current object should be in here
       this.editing = false;
     },
 
@@ -192,8 +192,8 @@ var ENTER_KEY = 13;
       $('.idea-text.edit', this.el).focus();
     },
 
-    updateOnEnter: function(e){
-      if (e.which == 13) {
+    updateOnKey: function(e){
+      if (e.keyCode == 13 || e.keyCode == 27) {
         this.stopEditing();
       }
     },
