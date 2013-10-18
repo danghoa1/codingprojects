@@ -162,7 +162,7 @@ exports.addNewIdea = function(request, response) {
         collection.insert(idea, {safe:true}, function(err, result) {
             if (err) {
                 console.log('Error adding new idea: ' + err);
-                response.send({'error':'An error has occurred'});
+                response.send(400,{'error':'An error has occurred'});
             } else {
                 console.log('Added ' + idea._id);
                 response.send(idea);

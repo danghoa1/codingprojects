@@ -45,6 +45,15 @@ td.delete-idea-column {
 	width:29px;
 }
 
+#idea-table tbody tr .delete-idea-column .close {
+	visibility: hidden;
+}
+
+#idea-table tbody tr:hover .delete-idea-column .close {
+	visibility: visible;
+}
+
+
 a {
 	cursor:pointer;
 }
