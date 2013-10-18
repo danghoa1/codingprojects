@@ -15,6 +15,10 @@ module.exports = function(app) {
 		res.sendfile(app.get('dirname') + '/app/client/html/index-basic-js.html');
 	});	
 
+	app.get('/index-angular', function(req, res) {
+		res.sendfile(app.get('dirname') + '/app/client/html/index-angular.html');
+	});	
+
 	// Home page ------------------------------------------------------------------------
 
 	app.get('/', function(req, res) {
