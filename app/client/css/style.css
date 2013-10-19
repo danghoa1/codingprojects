@@ -41,6 +41,10 @@ td.checkbox-column {
 	width: 29px;
 }
 
+td.checkbox-column .idea-checkbox {
+	vertical-align: top;
+}
+
 td.delete-idea-column {
 	width:29px;
 }

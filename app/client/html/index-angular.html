@@ -121,6 +121,7 @@
 		    
 		    <div class="space"></div>
 
+
 		    <!-- Ideas ************** -->
 		    
 		    <div class="anchor" id="ideas" styles="display:inline;"><h2>Ideas</h2></div>
@@ -143,7 +144,7 @@
 
 				        	<p ng-hide="editing{{ideas.indexOf(idea)}}" ng-dblclick="editIdea(idea)" class="idea-text {{idea.completed ? 'complete' : ' incomplete'}}">{{idea.name}}</p>
 
-				        	<input id="idea{{ideas.indexOf(idea)}}" class="idea-text edit" ng-model="idea.name" ng-show="editing{{ideas.indexOf(idea)}}">
+				        	<input id="idea{{ideas.indexOf(idea)}}" class="idea-text edit" placeholder="New idea" ng-model="idea.name" ng-show="editing{{ideas.indexOf(idea)}}" idea-focus="editing{{ideas.indexOf(idea)}}" ng-keyup="keyUp($event, idea)" ng-blur="blur(idea)">
 
 				        </td>
 				        <td class="delete-idea-column"><a class="close" ng-click="deleteIdea(idea)">x</a></td>
@@ -155,6 +156,8 @@
 
 			<div class="space"></div>		
 
+
+			<!-- Technologies ************** -->
 
 			<div class="anchor" id="technologies" ><h2>Technologies</h2><div>
 		  
@@ -190,6 +193,8 @@
 
 			<div class="space"></div>	    
 
+
+			<!-- About ************** -->
 		    
 		    <div class="anchor" id="about" ><h2>About</h2><div>
 		    <p>Created by Phi Dang</p>
