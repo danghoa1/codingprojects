@@ -27,15 +27,17 @@ module.exports = function(app) {
 
 	app.get('/projects', DBManager.loadProjects);
 
-	app.get('/ideas', DBManager.loadIdeas);
+	app.post('/projects', DBManager.addNewProject);
 
-	app.get('/technologies', DBManager.loadTechnologies);
+	app.get('/ideas', DBManager.loadIdeas);
 
 	app.put('/ideas/:id',DBManager.updateIdea);
 
 	app.post('/ideas', DBManager.addNewIdea);
 
 	app.delete('/ideas/:id',DBManager.deleteIdea);
+
+	app.get('/technologies', DBManager.loadTechnologies);
 
 	// Login ------------------------------------------------------------------------------
 

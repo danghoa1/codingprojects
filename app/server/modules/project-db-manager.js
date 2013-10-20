@@ -62,6 +62,26 @@ exports.loadProjects = function(request,response) {
 	  });
 };
 
+exports.addNewProject = function(request, response) {
+
+	var project = request.body;
+	delete project._id;
+
+	console.log('Adding new project:');
+    console.log(JSON.stringify(project));
+    db.collection('projects', function(err, collection) {
+        collection.insert(project, {safe:true}, function(err, result) {
+            if (err) {
+                console.log('Error adding new project: ' + err);
+                response.send(400,{'error':'An error has occurred'});
+            } else {
+                console.log('Added ' + project._id);
+                response.send(project);
+            }
+        });
+    });
+}
+
 exports.loadIdeas = function(request,response) {
 
 	db.collection('ideas', function(err, collection) {

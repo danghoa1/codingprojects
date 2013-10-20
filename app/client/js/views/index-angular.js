@@ -22,6 +22,32 @@ indexApp.controller('ProjectController', function($scope,$http) {
 		$scope.projects = data;
 	});
 
+	$scope.newProject = {name:"", url:"", description:"", technologies:""};
+
+	$scope.addProject = function() {
+
+		// Verify input
+		if ($scope.newProject.name =="" || $scope.newProject.url=="" || $scope.newProject.description=="" || $scope.newProject.technologies=="") {
+			alert('empty');
+			return;
+		}
+
+		// Set day
+		$scope.newProject.day = $scope.projects.length + 1;
+
+		// Conver technologies string into array
+		$scope.newProject.technologies = $scope.newProject.technologies.replace(/\s/g,"").split(',');
+		
+		// Upload to server
+		$http.post('/projects', $scope.newProject).success(function(data){
+			$scope.projects.push(data);
+			$scope.newProject = {name:"", url:"", description:"", technologies:""};
+
+		});
+
+	
+	};
+
 });
 
 indexApp.controller('IdeaController', function($scope,$http) {
@@ -55,7 +81,7 @@ indexApp.controller('IdeaController', function($scope,$http) {
 		});
 	}
 
-	$scope.editIdea = function(idea)
+	$scope.startEditing = function(idea)
 	{
 		// Back up in case we want to revert
 		$scope.backup = angular.extend({},idea);
@@ -64,7 +90,7 @@ indexApp.controller('IdeaController', function($scope,$http) {
 		$scope['editing' + $scope.ideas.indexOf(idea)] = true;
 	}
 
-	$scope.stopEditingIdea = function(idea)
+	$scope.stopEditing = function(idea)
 	{
 		$scope['editing' + $scope.ideas.indexOf(idea)] = false;
 	}
@@ -74,14 +100,27 @@ indexApp.controller('IdeaController', function($scope,$http) {
 		var newIdea = {name: '', completed:false}
 		$http.post('/ideas', newIdea).success(function(data){
 			$scope.ideas.splice(0,0,data);
-			$scope.editIdea($scope.ideas[0]);
+			$scope.startEditing($scope.ideas[0]);
 		});
+	}
+
+	// Events ---------------------------------
+
+	$scope.check = function(idea)
+	{
+		$scope.updateIdea(idea);
+	}
+
+	$scope.ideaDblClick = function(idea)
+	{
+		$scope.startEditing(idea);
 	}
 
 	$scope.blur = function(idea)
 	{
-		$scope.stopEditingIdea(idea);
-		$scope.updateIdea(idea);
+		$scope.stopEditing(idea);
+		if (JSON.stringify($scope.backup) != JSON.stringify(idea))
+			$scope.updateIdea(idea);
 	}
 
 	$scope.keyUp = function(e,idea)
@@ -89,7 +128,7 @@ indexApp.controller('IdeaController', function($scope,$http) {
 		// Revert idea
 		if (e.keyCode == 27)
 		{
-			$scope.stopEditingIdea(idea);
+			$scope.stopEditing(idea);
 
 			// Revert to backup
 			$scope.ideas[$scope.ideas.indexOf(idea)] = $scope.backup;
@@ -98,8 +137,9 @@ indexApp.controller('IdeaController', function($scope,$http) {
 		// Blur on pressing ENTER key
 		else if (e.keyCode == 13)
 		{
-			$scope.stopEditingIdea(idea);
-			$scope.updateIdea(idea);
+			$scope.stopEditing(idea);
+			if (JSON.stringify($scope.backup) != JSON.stringify(idea))
+				$scope.updateIdea(idea);
 		};
 	}
 });

@@ -5,30 +5,41 @@
 		<title>Daily Coding</title>
 
 	    <!-- Bootstrap --> 
-	    <link href="vendor/bootstrap-responsive.css" rel="stylesheet"> 
-	    <link href="vendor/bootstrap.css" rel="stylesheet">  
+	    <link href="vendor/bootstrap-responsive.min.css" rel="stylesheet"> 
+	    <link href="vendor/bootstrap.min.css" rel="stylesheet">  
 	    <link href="css/style.css" rel="stylesheet">
 
 
-	<body data-spy="scroll" data-target=".navbar" offset="50">
-		<div class="container">
+	<body>
+		
+			<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  			<div class="container">
+				  <!-- Brand and toggle get grouped for better mobile display -->
+				  <div class="navbar-header">
+				    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+				      <span class="sr-only">Toggle navigation</span>
+				      <span class="icon-bar"></span>
+				      <span class="icon-bar"></span>
+				      <span class="icon-bar"></span>
+				    </button>
+				    <a class="navbar-brand" href="/">Daily Coding</a>
+				  </div>
 
-			<!-- Navigation bar -->
-			<div id="navbar" class="navbar navbar-fixed-top navbar-inverse">  
-		        <div class="navbar-inner">  
-			        <div class="container">
-			            <ul class="nav pull-left">
-			            	<li><a class="brand" href="/">Daily Coding</a></li> 
-				            <li class="active"><a href="#projects">Projects</a></li>  
-				            <li><a href="#ideas">Ideas</a></li>  
-				            <li><a href="#technologies">Technologies</a></li> 
-				             <li><a href="#about">About</a></li> 
-			            </ul>
-			            <ul class="nav pull-right" id="login-area">
-			            </ul>
-			        </div>  
-		        </div>  
-		    </div>   
+				  <!-- Collect the nav links, forms, and other content for toggling -->
+				  <div class="collapse navbar-collapse navbar-ex1-collapse">
+				    <ul class="nav navbar-nav">
+				      <li class="active"><a href="#projects">Projects</a></li>  
+	            <li><a href="#ideas">Ideas</a></li>  
+	            <li><a href="#technologies">Technologies</a></li> 
+	            <li><a href="#about">About</a></li>   
+				    </ul>
+				    <ul class="nav navbar-nav navbar-right">
+				      <li><p class="navbar-text pull-right">Welcome, Ly Nguyen!</p></li>
+				      <li><a>Sign in</a></li>
+				    </ul>
+				  </div><!-- /.navbar-collapse -->
+				 </div>
+			</nav>
 
 		    
 		    <!-- Login Modal -->
@@ -86,6 +97,11 @@
 					</div>  
 				</form>
 
+	<div class="container">
+
+		<div class="space"></div>
+
+		<p>Everyday, a new project is completed.  Remember to check back later!</p>
 				<!-- Projects ************** -->
 
 		    <div class="anchor" id="projects" ><h2>Projects</h2><div>
@@ -116,7 +132,30 @@
             	</tr>
            	</tbody>  
           </table>
-          <p>Everyday, a new project is completed.  Remember to check back later!</p>
+
+          <div id="collapsibleAddProject"><a href="#addProject" data-toggle="collapse"><p>Add new project</p></a></div>
+          <div id="addProject" class="collapse">
+          	<form id="addProjectForm">
+	          	<div class="panel panel-default">
+	          		<div class="panel-heading">
+	          			<p class="row"><h5>Day {{projects.length + 1}}</h5></p>
+          			</div>
+	          		<div class="panel-body">
+	          			<p>{{newProjectErrorMessage}}</p>
+		          		<p class="row">
+		          			<div class="col-md-2"><input type="text" class="form-control" ng-model="newProject.name" placeholder="Project Name"></input></div>
+		          			<div class="col-md-2"><input type="text" class="form-control" ng-model="newProject.url"  placeholder="Project URL"></input></div>
+		          			<div class="col-md-8"><input type="text" class="form-control" ng-model="newProject.technologies"  placeholder="Adopted Technologies"></input></div>
+		          		</p>
+		          		<p class="row">
+		          			<div class="col-md-10"><input type="text" class="form-control" ng-model="newProject.description"  placeholder="Project Description"></input>
+		          			</div>
+		          			<div class="col-md-2"><button type="submit" class="btn btn-primary btn-block" ng-click="addProject()">Add</button></div>
+		          		</p>
+		          	</div>
+		          </div>
+          	</form>
+          </div>
 	    	</div>
 		    
 		    <div class="space"></div>
@@ -138,11 +177,11 @@
             <tbody> 
             	<tr ng-repeat="idea in ideas | filter:(showCompleted ? {} : {completed:false})">
 	            	<td  class="checkbox-column">
-            			<input type="checkbox" class="idea-checkbox" ng-model="idea.completed" ng-click="updateIdea(idea)">
+            			<input type="checkbox" class="idea-checkbox" ng-model="idea.completed" ng-change="check(idea)">
             		</td> 
 				        <td class="idea-text-column">
 
-				        	<p ng-hide="editing{{ideas.indexOf(idea)}}" ng-dblclick="editIdea(idea)" class="idea-text {{idea.completed ? 'complete' : ' incomplete'}}">{{idea.name}}</p>
+				        	<p ng-hide="editing{{ideas.indexOf(idea)}}" ng-dblclick="ideaDblClick(idea)" class="idea-text {{idea.completed ? 'complete' : ' incomplete'}}">{{idea.name}}</p>
 
 				        	<input id="idea{{ideas.indexOf(idea)}}" class="idea-text edit" placeholder="New idea" ng-model="idea.name" ng-show="editing{{ideas.indexOf(idea)}}" idea-focus="editing{{ideas.indexOf(idea)}}" ng-keyup="keyUp($event, idea)" ng-blur="blur(idea)">
 
@@ -174,7 +213,7 @@
 	    	<table class="table">  
           <thead> 
             <tr> 
-              <th class="span3">Name</th>  
+              <th class="col-md-2">Name</th>  
               <th>Related Projects</th>  
             </tr>  
           </thead> 
@@ -209,7 +248,7 @@
 	    <script src="vendor/underscore-min.js"></script>
 	    <script src="vendor/angular.min.js"></script>
 	    <script src="vendor/jquery.form.js"></script>
-	    <script src="vendor/bootstrap.js"></script>
+	    <script src="vendor/bootstrap.min.js"></script>
 	    <script src="js/views/index-angular.js"></script>
 
 	    <script>
