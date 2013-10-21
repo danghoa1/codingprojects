@@ -1,0 +1,135 @@
+<!DOCTYPE html> 
+<html>
+	<head>
+
+		<title>Daily Coding</title>
+
+	    <!-- Bootstrap --> 
+	    <link href="vendor/bootstrap-responsive.css" rel="stylesheet"> 
+	    <link href="vendor/bootstrap.css" rel="stylesheet">  
+	    <link href="css/style.css" rel="stylesheet">
+
+
+	<body data-spy="scroll" data-target=".navbar" offset="50">
+		<div class="container">
+
+			<!-- Navigation bar -->
+			<div id="navbar" class="navbar navbar-fixed-top navbar-inverse">  
+		        <div class="navbar-inner">  
+			        <div class="container">
+			            <ul class="nav pull-left">
+			            	<li><a class="brand" href="/">Daily Coding</a></li> 
+				            <li class="active"><a href="#projects">Projects</a></li>  
+				            <li><a href="#ideas">Ideas</a></li>  
+				            <li><a href="#technologies">Technologies</a></li> 
+				             <li><a href="#about">About</a></li> 
+			            </ul>
+			            <ul class="nav pull-right" id="login-area">
+			            </ul>
+			        </div>  
+		        </div>  
+		    </div>   
+
+		    
+		    <!-- Login Modal -->
+		    <form method="post" id="login-form">
+			    <div id="login-modal" class="modal modal-login hide fade in" style="display: none; ">  
+			    	
+				    
+				    	<div class="modal-header">
+				    		<a class="close" data-dismiss="modal">x</a>
+				    		<h5>Sign in</h5>	
+				    	</div>
+						<div class="modal-body">  
+						    <div id='login-error'></div>      
+					      	<label>Username</label>
+					      	<input type="text" name="user" id="user-tf" class="input-block-level required">
+					      	<label>Password &nbsp;&nbsp;&nbsp;<a id="txt-forgot">Forgot?</a></label>
+					      	<input type="password" name="pass" id="pass-tf" class="input-block-level required">
+						</div>
+						<div class="modal-footer">
+							<table class="table borderless" style="margin-bottom:0px;">
+								<tbody>
+									<td>
+										<label  class="checkbox" style="margin-top:5px;">Remember Me
+					        				<input type="checkbox" id="remember-me" checked="checked">
+										</label>
+									</td>
+									<td class="pull-right">
+										<button type="submit" id="submit" class="btn btn-primary">Sign in</button> <button class="btn" data-dismiss="modal">Close</button> 
+									</td>
+								</tbody>
+							</table>
+								
+						        
+						</div>   
+					
+				</div>  
+			</form>
+
+			<!-- Forgot Password Modal -->
+		    <form method="post" id="forgot-password-form">
+			    <div id="forgot-password-modal" class="modal modal-login hide fade in" style="display: none; ">  
+				    	<div class="modal-header">
+				    		<a class="close" data-dismiss="modal">x</a>
+				    		<h5>Forgot Password</h5>	
+				    	</div>
+						<div class="modal-body">  
+						    <div id='forgot-password-error'></div>
+					      	<label>Please type in your email address.</label>
+					      	<input type="text" name="email" id="email-tf" class="input-block-level required">
+						</div>
+						<div class="modal-footer">
+							<button type="submit" id="submit" class="btn btn-primary">Send</button> <button class="btn" data-dismiss="modal">Cancel</button> 
+						        
+						</div>   
+				</div>  
+			</form>
+
+
+		    <div class="anchor" id="projects" ><h2>Projects</h2><div>
+		    
+		    <div id="projectlist"></div>
+		    <p>Everyday, a new project is completed.  Remember to check back later!</p>
+
+
+		    <div class="space"></div>
+
+
+		    
+		    <div class="anchor" id="ideas" styles="display:inline;"><h2>Ideas</h2></div>
+		    <div id="idealist"></div>
+
+
+			<div class="space"></div>		
+
+
+			<div class="anchor" id="technologies" ><h2>Technologies</h2><div>
+		    <div id="techlist"></div>
+
+
+			<div class="space"></div>	    
+
+		    
+		    <div class="anchor" id="about" ><h2>About</h2><div>
+		    <p>Created by Phi Dang</p>
+		</div>
+
+
+
+		<!-- Script -->
+
+		<script src="vendor/jquery.min.js"></script>
+	    <script src="vendor/json2.js"></script>
+	    <script src="vendor/underscore-min.js"></script>
+	    <script src="vendor/backbone-min.js"></script>
+	    <script src="vendor/jquery.form.js"></script>
+	    <script src="vendor/bootstrap.js"></script>
+	    <script src="js/old/models/authentication.js"></script>
+	    <script src="js/old/views/index-backbone.js"></script>
+
+	    <script>
+	    	
+	    </script>
+	</body>
+</html>
