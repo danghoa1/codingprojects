@@ -16,6 +16,25 @@ indexApp.directive('ideaFocus', function ideaFocus($timeout) {
 
 // Controllers ----------------------------------------------------------------------
 
+indexApp.controller('MainController', function($scope, $http) {
+
+	$scope.attemptAutoLogin = function() {
+		$http.get("/attemptAutoLogin").success(function(user){
+			$scope.authentication.authorized = true;
+			$scope.authentication.user = user;
+		});
+	};
+
+	$scope.authorized = function() {
+		return ($scope.authentication.authorized);
+	}
+
+	$scope.authentication = {'authorized': false, 'user':null};
+	$scope.attemptAutoLogin();
+});
+
+
+
 indexApp.controller('ProjectController', function($scope,$http) {
 
 	$http.get('/projects').success(function(data) {
@@ -149,4 +168,146 @@ indexApp.controller('TechnologyController', function($scope,$http) {
 	$http.get('/technologies').success(function(data) {
 		$scope.technologies = data;
 	});
+});
+
+indexApp.controller('NavbarController', function($scope, $http) {
+
+
+	$scope.showLoginModal = function()
+	{
+		// Show login modal
+		$('#login-modal').modal();
+	}
+	
+	$scope.signOut = function()
+	{
+		$scope.authentication.authorized = false;
+		$scope.authentication.user = null;
+	}
+
+});
+
+indexApp.controller("LoginController", function($scope, $http) {
+
+	// Initalize variables
+	$scope.status ='';
+	$scope.message = '';
+	$scope.username = '';
+	$scope.password = '';
+	$scope.rememberme = true;
+
+	$scope.attemptManualLogin = function() {
+
+		// Set message
+		$scope.status = 'signingin';
+		$scope.message ='Signing in.  Please wait ...';
+
+		$http.post('/attemptManualLogin', {'user' : $scope.username, 'pass' : $scope.password, 'remember-me' : $scope.rememberme})
+		.success(function(user) {
+			$scope.authentication.authorized = true;
+			$scope.authentication.user = user;
+
+			$scope.status = 'signedin';
+			$scope.message = 'Successfully signed in.';
+
+			setTimeout(function() {
+				$('#login-modal').modal('hide');
+				$scope.status ='';
+				$scope.message ='';
+			}, 1000);
+		})
+		.error(function(error) {
+			$scope.showError('Username and/or password is incorrect.');
+		});
+	}
+
+	$scope.showError = function(message)
+	{
+		$scope.status = "error";
+		$scope.message = message;
+	}
+
+	$scope.showForgotModal = function()
+	{
+		$('#login-modal').modal('hide');
+		$('#forgot-password-modal').modal();
+	}
+
+	$scope.validateLogin = function() 
+	{
+		if ($scope.username == null || $scope.username == "") return false;
+		else if ($scope.password == null || $scope.password == "") return false;
+		return true;
+	}
+
+	$scope.signin = function()
+	{
+		if ($scope.validateLogin())
+			$scope.attemptManualLogin();
+
+		// Invalid input
+		else
+		{
+			$scope.showError('Username and password cannot be empty.');
+		}
+	}
+});
+
+indexApp.controller("ForgotPassController", function($scope, $http) {
+
+	// Initalize variables
+	$scope.status ='';
+	$scope.message = '';
+	$scope.email = '';
+
+	$scope.resetPassword = function() {
+
+		// Set message
+		$scope.status = 'sending';
+		$scope.message ='Sending.  Please wait ...';
+
+		$http.post('/forgotPassword', {'email': $scope.email})
+		.success(function() {
+			
+			$scope.status = 'sent';
+			$scope.message = 'Your password has been sent.';
+
+			setTimeout(function() {
+				$('#forgot-password-modal').modal('hide');
+				$scope.status ='';
+				$scope.message ='';
+			}, 1000);
+		})
+		.error(function(error) {
+			$scope.showError('This email address is not associated with any account.');
+		});
+	}
+
+	$scope.showError = function(message)
+	{
+		$scope.status = "error";
+		$scope.message = message;
+	}
+
+	$scope.validateEmail = function() 
+	{
+		if ($scope.email == null || $scope.email == "") return false;
+			
+		var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		if (!filter.test($scope.email)) return false;
+
+		else return true;
+	}
+
+	$scope.send = function()
+	{
+		if ($scope.validateEmail())
+			$scope.resetPassword();
+
+		// Invalid input
+		else
+		{
+			$scope.showError('Invalid email address.');
+		}
+	}
 });

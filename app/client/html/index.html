@@ -12,7 +12,7 @@
 
 
 	<body>
-		
+		<div ng-controller="MainController">
 			<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   			<div class="container">
 				  <!-- Brand and toggle get grouped for better mobile display -->
@@ -34,69 +34,79 @@
 	            <li><a href="#technologies">Technologies</a></li> 
 	            <li><a href="#about">About</a></li>   
 				    </ul>
-				    <ul class="nav navbar-nav navbar-right">
-				      <li><p class="navbar-text pull-right">Welcome, Ly Nguyen!</p></li>
-				      <li><a>Sign in</a></li>
+				    <ul class="nav navbar-nav navbar-right" ng-controller="NavbarController">
+				      <li><p class="navbar-text pull-right" ng-show="authentication.authorized">Welcome, {{authentication.user.user}}!</p></li>
+				      <li><a ng-click="authentication.authorized ? signOut() : showLoginModal()">{{authentication.authorized ? 'Sign out' : 'Sign in'}}</a></li>
 				    </ul>
 				  </div><!-- /.navbar-collapse -->
 				 </div>
 			</nav>
 
 		    
+
+
 		    <!-- Login Modal -->
-		    <form method="post" id="login-form">
-			    <div id="login-modal" class="modal modal-login hide fade in" style="display: none; ">  
-			    	
-				    
-				    	<div class="modal-header">
-				    		<a class="close" data-dismiss="modal">x</a>
-				    		<h5>Sign in</h5>	
-				    	</div>
-						<div class="modal-body">  
-						    <div id='login-error'></div>      
-					      	<label>Username</label>
-					      	<input type="text" name="user" id="user-tf" class="input-block-level required">
-					      	<label>Password &nbsp;&nbsp;&nbsp;<a id="txt-forgot">Forgot?</a></label>
-					      	<input type="password" name="pass" id="pass-tf" class="input-block-level required">
-						</div>
-						<div class="modal-footer">
-							<table class="table borderless" style="margin-bottom:0px;">
-								<tbody>
-									<td>
-										<label  class="checkbox" style="margin-top:5px;">Remember Me
-					        				<input type="checkbox" id="remember-me" checked="checked">
-										</label>
-									</td>
-									<td class="pull-right">
-										<button type="submit" id="submit" class="btn btn-primary">Sign in</button> <button class="btn" data-dismiss="modal">Close</button> 
-									</td>
-								</tbody>
-							</table>
-								
-						        
-						</div>   
-					
-				</div>  
+		    <form method="post" ng-controller="LoginController">
+		    	<div id="login-modal" class="modal fade">
+					  <div class="modal-dialog" style="width:400px;">
+					    <div class="modal-content">
+
+					      <div class="modal-header">
+					        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					        <h4 class="modal-title">Sign in</h4>
+					      </div>
+
+					      <div class="modal-body">
+										        
+					      	<div class="alert" ng-class="{'alert-danger': status=='error', 'alert-info': status=='signingin', 'alert-success': status=='signedin'}" ng-hide="(status=='')">{{message}}</div>
+
+					      	<p>Username</p>
+					      	<p><input type="text" id="user-tf" class="form-control required" ng-model="username"></p>
+
+					      	<p>Password &nbsp;&nbsp;&nbsp;<a ng-click="showForgotModal()">Forgot?</a></p>
+					      	<p><input type="password" id="pass-tf" class="form-control required" ng-model="password"></p>
+		      				
+								    <input type="checkbox" id="remember-me" ng-model="rememberme"> Remember Me
+								  
+									
+					      </div>
+					      <div class="modal-footer">
+					      	<button type="button" class="btn btn-primary" ng-click="signin()" ng-disabled="status == 'signingin' || status == 'signedin'" >Sign in</button>
+							        <button type="button" class="btn btn-default" data-dismiss="modal" ng-disabled="status == 'signingin' || status == 'signedin'">Close</button>
+						      
+					      </div>
+					    </div><!-- /.modal-content -->
+					  </div><!-- /.modal-dialog -->
+					</div><!-- /.modal -->
 			</form>
 
 			<!-- Forgot Password Modal -->
-		    <form method="post" id="forgot-password-form">
-			    <div id="forgot-password-modal" class="modal modal-login hide fade in" style="display: none; ">  
-				    	<div class="modal-header">
-				    		<a class="close" data-dismiss="modal">x</a>
-				    		<h5>Forgot Password</h5>	
-				    	</div>
-						<div class="modal-body">  
-						    <div id='forgot-password-error'></div>
-					      	<label>Please type in your email address.</label>
-					      	<input type="text" name="email" id="email-tf" class="input-block-level required">
-						</div>
-						<div class="modal-footer">
-							<button type="submit" id="submit" class="btn btn-primary">Send</button> <button class="btn" data-dismiss="modal">Cancel</button> 
-						        
-						</div>   
-					</div>  
-				</form>
+			<form method="post" ng-controller="ForgotPassController">
+		    	<div id="forgot-password-modal" class="modal fade">
+					  <div class="modal-dialog">
+					    <div class="modal-content">
+
+					      <div class="modal-header">
+					        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					        <h4 class="modal-title">Forgot Password</h4>
+					      </div>
+
+					      <div class="modal-body">
+										        
+					      	<div class="alert" ng-class="{'alert-danger': status=='error', 'alert-info': status=='sending', 'alert-success': status=='sent'}" ng-hide="(status=='')">{{message}}</div>
+
+					      	<p>Please type in your email address.</p>
+					      	<p><input type="text" id="user-tf" class="form-control required" ng-model="email"></p>
+					      </div>
+					      <div class="modal-footer">
+					      	<button type="button" class="btn btn-primary" ng-click="send()" ng-disabled="status == 'sending' || status == 'sent'">Send</button>
+							        <button type="button" class="btn btn-default" data-dismiss="modal" ng-disabled="status == 'sending' || status == 'sent'">Cancel</button>
+						      
+					      </div>
+					    </div><!-- /.modal-content -->
+					  </div><!-- /.modal-dialog -->
+					</div><!-- /.modal -->
+			</form>
 
 	<div class="container">
 
@@ -134,7 +144,8 @@
            	</tbody>  
           </table>
 
-          <div id="collapsibleAddProject"><a href="#addProject" data-toggle="collapse"><p>Add new project</p></a></div>
+          <button type="button" href="#addProject" data-toggle="collapse" class="btn {{addNewProjectExpand ? ' btn-info' : ' btn-default'}}" ng-click="addNewProjectExpand = !addNewProjectExpand" ng-disabled="!authorized()">Add new Project</button>
+
           <div id="addProject" class="collapse">
           	<form id="addProjectForm">
 	          	<div class="panel panel-default">
@@ -169,25 +180,25 @@
 		    <div ng-controller="IdeaController">
 
 		    	<p>
-		    		<a id="new-idea-btn" ng-click="addIdea()">Add new idea</a>
+		    		<button type="button" class="btn btn-default" ng-click="addIdea()" ng-disabled="!authorized()">Add new Project</button>
 		    		&nbsp;&nbsp;|&nbsp;&nbsp;
-		    		<a ng-click="showCompleted = !showCompleted">{{showCompleted ? "Hide" : "Show"}} completed ({{Ncompleted()}})</a>
+		    		<button type="button" class="btn {{showCompleted ? ' btn-info' : ' btn-default'}}" ng-click="showCompleted = !showCompleted" ng-disabled="!authorized()">Show completed ({{Ncompleted()}})</button>
 		    	</p> 
 
           <table class="table borderless" id="idea-table"> 
             <tbody> 
             	<tr ng-repeat="idea in ideas | filter:(showCompleted ? {} : {completed:false})">
 	            	<td  class="checkbox-column">
-            			<input type="checkbox" class="idea-checkbox" ng-model="idea.completed" ng-change="check(idea)">
+            			<input type="checkbox" class="idea-checkbox" ng-model="idea.completed" ng-change="check(idea)" ng-disabled="!authorized()">
             		</td> 
 				        <td class="idea-text-column">
 
-				        	<p ng-hide="editing{{ideas.indexOf(idea)}}" ng-dblclick="ideaDblClick(idea)" class="idea-text {{idea.completed ? 'complete' : ' incomplete'}}">{{idea.name}}</p>
+				        	<p ng-hide="editing{{ideas.indexOf(idea)}}" ng-dblclick="(authorized() ? ideaDblClick(idea) : null)" class="idea-text {{idea.completed ? 'complete' : ' incomplete'}}">{{idea.name}}</p>
 
-				        	<input id="idea{{ideas.indexOf(idea)}}" class="idea-text edit" placeholder="New idea" ng-model="idea.name" ng-show="editing{{ideas.indexOf(idea)}}" idea-focus="editing{{ideas.indexOf(idea)}}" ng-keyup="keyUp($event, idea)" ng-blur="blur(idea)">
+				        	<input id="idea{{ideas.indexOf(idea)}}" class="idea-text edit" placeholder="New idea" ng-model="idea.name" ng-show="editing{{ideas.indexOf(idea)}}" idea-focus="editing{{ideas.indexOf(idea)}}" ng-keyup="keyUp($event, idea)" ng-blur="blur(idea)" ng-disabled="!authorized()">
 
 				        </td>
-				        <td class="delete-idea-column"><a class="close" ng-click="deleteIdea(idea)">x</a></td>
+				        <td class="delete-idea-column"><a class="close" ng-click="deleteIdea(idea)" ng-hide="!authorized()">x</a></td>
       			</tr>
             </tbody>  
           </table>
@@ -242,8 +253,9 @@
 
 
 
-		<!-- Script -->
-
+		
+	</div>
+	<!-- Script -->
 		<script src="vendor/jquery.min.js"></script>
 	    <script src="vendor/json2.js"></script>
 	    <script src="vendor/underscore-min.js"></script>
@@ -255,5 +267,6 @@
 	    <script>
 	    	
 	    </script>
+
 	</body>
 </html>

@@ -44,15 +44,16 @@ module.exports = function(app) {
 	app.get('/attemptAutoLogin', function(req, res) {
 		if (AccountManager.checklogin(req.cookies.user, req.cookies.pass) == true)
 		{
-			res.send(true, 200);
+			res.send(200, {'user' : req.cookies.user, 'pass': req.cookies.pass});
 		}
 		else
 		{
-			res.send(false, 200);
+			res.send(400);
 		}
 	});
 
 	app.post('/attemptManualLogin', function(req, res) {
+		console.log(req.param('user'));
 		if (AccountManager.checklogin(req.param('user'), req.param('pass')) == true)
 		{
 			// Save username to session
@@ -60,13 +61,13 @@ module.exports = function(app) {
 
 			// Save login info to cookie
 			console.log(req.param('remember-me'));
-			if (req.param('remember-me') == 'true')
+			if (req.param('remember-me') == true)
 			{
 				console.log("remembered");
 				res.cookie('user', req.param('user'), {maxAge : 900000});
 				res.cookie('pass', req.param('pass'), {maxAge : 900000});
 			}
-			res.send(200);
+			res.send(200, {'user' : req.param('user'), 'pass': req.param('pass')});
 		}
 		else 
 		{
