@@ -2,9 +2,9 @@
 var express = require('express');	// eases http request/response management
 var path = require('path');			// quickly obtains file paths
 
-// Create a HTTP server
-var app = express(express.logger());
 
+// Create a HTTP server
+app = express(express.logger());
 
 // Your own super cool function
 var logger = function(req, res, next) {
@@ -20,11 +20,11 @@ app.configure(function () {
 	app.use(express.bodyParser());
 	app.use(express.cookieParser());
 	app.use(express.session({secret : 'I must code. Daily.'}));
-	app.use(express.static(__dirname + '/app/client'));
+	app.use(express.static(__dirname + '/public'));
 });
 
-// Router
-require('./app/server/router')(app);
+// Routing
+require('./routes');
 
 
 // Listen to a port
